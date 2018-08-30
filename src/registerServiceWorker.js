@@ -19,7 +19,7 @@ const isLocalhost = Boolean(
 );
 
 export default function register() {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
     if (publicUrl.origin !== window.location.origin) {
@@ -30,7 +30,9 @@ export default function register() {
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+      const swUrl = process.env.NODE_ENV === 'production'
+        ? `${process.env.PUBLIC_URL}/service-worker.js`
+        : `${process.env.PUBLIC_URL}/custom-service-worker.js`;
 
       if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
@@ -38,11 +40,24 @@ export default function register() {
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
-        navigator.serviceWorker.ready.then(() => {
+        navigator.serviceWorker.ready.then((register) => {
           console.log(
             'This web app is being served cache-first by a service ' +
               'worker. To learn more, visit https://goo.gl/SC7cgQ'
           );
+
+          // Subscribe to push notification
+          register.pushManager.subscribe({
+            userVisibleOnly: true
+          }).then((sub) => {
+            console.log('Endpoint URL: ', sub.endpoint);
+          }).catch((e) => {
+            if (Notification.permission === 'denied') {
+              console.warn('Permission for notifications was denied');
+            } else {
+              console.error('Unable to subscribe to push', e);
+            }
+          });
         });
       } else {
         // Is not local host. Just register service worker
