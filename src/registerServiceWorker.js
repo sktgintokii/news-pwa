@@ -49,8 +49,9 @@ export default function register() {
           // Subscribe to push notification
           register.pushManager.subscribe({
             userVisibleOnly: true
-          }).then((sub) => {
-            console.log('Endpoint URL: ', sub.endpoint);
+          }).then((subscription) => {
+            console.log('[Service Worker] Push notification endpoint URL: ',
+              subscription.endpoint);
           }).catch((e) => {
             if (Notification.permission === 'denied') {
               console.warn('Permission for notifications was denied');

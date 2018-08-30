@@ -23,7 +23,6 @@ class Home extends Component {
       country: 'us',
     })
       .then((articles) => {
-        console.log(articles)
         this.setState({ headlines: articles });
       });
 

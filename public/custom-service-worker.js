@@ -22,7 +22,8 @@ self.addEventListener('fetch', function(e) {
   }
 });
 
-self.addEventListener('push', function(e) {
+self.addEventListener('push', (e) => {
+  console.log(e)
   var options = {
     body: 'This notification was generated from a push!',
     icon: 'android-chrome-512x512.png',
